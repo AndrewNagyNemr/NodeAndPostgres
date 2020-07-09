@@ -3,6 +3,8 @@ import Loading from "./loading/loading";
 import { getProducts } from "./../services/productService";
 import { getDepartments } from "./../services/departmentService";
 import { filterProducts } from "./../services/filter";
+import Pagination from "./../common/pagination";
+import { paginate } from "./../utils/paginate";
 
 class Home extends Component {
   state = {
@@ -10,6 +12,8 @@ class Home extends Component {
     departments: [],
     loading: true,
     selectedDepartment: "All",
+    pageSize: 3,
+    currentPage: 1,
   };
 
   async componentDidMount() {
@@ -19,11 +23,25 @@ class Home extends Component {
   }
 
   render() {
-    const { products, departments, loading, selectedDepartment } = this.state;
+    const {
+      products,
+      departments,
+      loading,
+      selectedDepartment,
+      pageSize,
+      currentPage,
+    } = this.state;
+
     const filteredProducts = filterProducts(
       products,
       departments,
       selectedDepartment
+    );
+
+    const paginatedFilteredProducts = paginate(
+      filteredProducts,
+      currentPage,
+      pageSize
     );
 
     if (loading) return <Loading />;
@@ -41,7 +59,7 @@ class Home extends Component {
               </tr>
             </thead>
             <tbody>
-              {filteredProducts.map((p) => (
+              {paginatedFilteredProducts.map((p) => (
                 <tr key={p.product_id}>
                   <td>{p.name}</td>
                   <td>{p.price}</td>
@@ -52,6 +70,12 @@ class Home extends Component {
               ))}
             </tbody>
           </table>
+          <Pagination
+            itemsCount={filteredProducts.length}
+            pageSize={pageSize}
+            onPageChange={this.handlePageChange}
+            currentPage={currentPage}
+          />
         </div>
         <div className="col-3">
           <div className="list-group">
@@ -77,13 +101,17 @@ class Home extends Component {
   }
 
   handleDepartment = (department) => {
-    this.setState({ selectedDepartment: department });
+    this.setState({ selectedDepartment: department, currentPage: 1 });
   };
 
   handleActiveDepartment = (department) => {
     let cls = "list-group-item list-group-item-action ";
     department === this.state.selectedDepartment && (cls += "active");
     return cls;
+  };
+
+  handlePageChange = (currentPage) => {
+    this.setState({ currentPage });
   };
 }
 

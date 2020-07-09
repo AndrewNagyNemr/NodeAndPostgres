@@ -12,8 +12,6 @@ export function getProduct(id) {
 export function addProduct(product) {
   product.price = parseInt(product.price);
   product.dep_id = parseInt(product.dep_id);
-  console.log(product);
-
   return http.post(`${apiEndPoint}/products`, product);
 }
 

@@ -52,7 +52,7 @@ class AddProduct extends Form {
     } else {
       try {
         await addProduct(this.state.data);
-        this.setState({ data: { name: "", price: "", department: "" } });
+        this.setState({ data: { name: "", price: "", dep_id: "" } });
         toast.success("successfully added product");
       } catch (ex) {
         if (ex.response && ex.response.status === 400) {
