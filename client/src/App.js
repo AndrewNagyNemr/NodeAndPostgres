@@ -1,12 +1,31 @@
 import React from "react";
+import { Route, Redirect, Switch } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import Navbar from "./components/navbar";
+import Home from "./components/home";
+import Departments from "./components/department/departments";
+import AddDepartment from "./components/department/addDepartment";
+import Products from "./components/product/products";
+import Promotions from "./components/promotion/promotions";
+import NotFound from "./components/not-found";
 import "./App.css";
-import Departments from "./components/departments";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
     <React.Fragment>
+      <ToastContainer />
+      <Navbar />
       <div className="container">
-        <Departments />
+        <Switch>
+          <Route path="/" exact component={Home} />
+          <Route path="/departments" exact component={Departments} />
+          <Route path="/departments/:id" exact component={AddDepartment} />
+          <Route path="/products" exact component={Products} />
+          <Route path="/promotions" exact component={Promotions} />
+          <Route path="/not-found" exact component={NotFound} />
+          {/* <Redirect to="/not-found" /> */}
+        </Switch>
       </div>
     </React.Fragment>
   );

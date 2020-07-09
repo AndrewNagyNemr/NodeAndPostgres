@@ -5,24 +5,18 @@ export function getDepartments() {
   return http.get(`${apiEndPoint}/departments`);
 }
 
-// export function absentToday(childId) {
-//   const date = moment().format("YYYY-MM-DD");
-//   return http.post(`${apiEndPoint}/attendance/create`, {
-//     child: childId,
-//     date,
-//     state: "Absent",
-//   });
-// }
+export function getDepartment(id) {
+  return http.get(`${apiEndPoint}/departments/${id}`);
+}
 
-// export function notAbsentToday(childId) {
-//   const date = moment().format("YYYY-MM-DD");
-//   return http.post(`${apiEndPoint}/attendance/create`, {
-//     child: childId,
-//     date,
-//     state: "Present",
-//   });
-// }
+export function addDepartment(department) {
+  return http.post(`${apiEndPoint}/departments`, department);
+}
 
-// export function getChildAbcence(id) {
-//   return http.get(`${apiEndPoint}/attendance/child/${id}`);
-// }
+export function updateDepartment(id, data) {
+  return http.put(`${apiEndPoint}/departments/${id}`, data);
+}
+
+export function deleteDepartment(id) {
+  return http.delete(`${apiEndPoint}/departments/${id}`);
+}

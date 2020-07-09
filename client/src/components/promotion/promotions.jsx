@@ -1,32 +1,46 @@
 import React, { Component } from "react";
-import { getDepartments } from "./../services/departmentService";
-import Loading from "./loading/loading";
-class Departments extends Component {
+import Loading from "../loading/loading";
+import { getPromotions } from "../../services/promotionService";
+import { Link } from "react-router-dom";
+
+class Promotions extends Component {
   state = {
     loading: true,
-    departments: [],
+    promotions: [],
   };
   async componentDidMount() {
-    const { data } = await getDepartments();
-    this.setState({ loading: false, departments: data });
+    const { data } = await getPromotions();
+    this.setState({ loading: false, promotions: data });
+    console.log(data);
   }
   render() {
-    const { loading, departments } = this.state;
+    const { loading, promotions } = this.state;
     if (loading) return <Loading />;
+    if (promotions.length === 0)
     return (
       <React.Fragment>
-        <h1>Departments</h1>
+        <h1>No promotions Available!</h1>
+        <Link to="./promotions/new" className="btn btn-primary my-2">
+          Add
+        </Link>
+      </React.Fragment>
+    );
+    return (
+      <React.Fragment>
+        <button className="btn btn-primary my-2">Add</button>
         <table className="table">
           <thead>
             <tr>
               <th>#</th>
-              <th>Name</th>
+              <th>Code</th>
+              <th>Active</th>
+              <th>Discount</th>
               <th></th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            {departments.map((d) => (
+            {promotions.map((d) => (
               <tr key={d.department_id}>
                 <td>{d.department_id}</td>
                 <td>{d.name}</td>
@@ -45,4 +59,4 @@ class Departments extends Component {
   }
 }
 
-export default Departments;
+export default Promotions;
