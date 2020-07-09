@@ -4,7 +4,7 @@ class Navbar extends Component {
   state = {};
   render() {
     return (
-      <nav className="navbar navbar-expand-lg navbar-light bg-light">
+      <nav className="navbar navbar-expand-lg navbar-light bg-light mb-4">
         <NavLink to="/" className="navbar-brand">
           trufla
         </NavLink>

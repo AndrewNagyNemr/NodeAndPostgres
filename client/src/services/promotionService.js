@@ -10,6 +10,7 @@ export function getPromotion(id) {
 }
 
 export function addPromotion(promotion) {
+  promotion.discount = parseInt(promotion.discount);
   return http.post(`${apiEndPoint}/promotions`, promotion);
 }
 

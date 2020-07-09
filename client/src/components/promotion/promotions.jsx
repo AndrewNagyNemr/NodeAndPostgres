@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import Loading from "../loading/loading";
 import { getPromotions } from "../../services/promotionService";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { deletePromotion } from "./../../services/promotionService";
 
 class Promotions extends Component {
   state = {
@@ -11,44 +13,57 @@ class Promotions extends Component {
   async componentDidMount() {
     const { data } = await getPromotions();
     this.setState({ loading: false, promotions: data });
-    console.log(data);
   }
   render() {
     const { loading, promotions } = this.state;
     if (loading) return <Loading />;
     if (promotions.length === 0)
+      return (
+        <React.Fragment>
+          <h1>No promotions Available!</h1>
+          <Link to="./promotions/new" className="btn btn-primary my-2">
+            Add
+          </Link>
+        </React.Fragment>
+      );
     return (
       <React.Fragment>
-        <h1>No promotions Available!</h1>
         <Link to="./promotions/new" className="btn btn-primary my-2">
           Add
         </Link>
-      </React.Fragment>
-    );
-    return (
-      <React.Fragment>
-        <button className="btn btn-primary my-2">Add</button>
         <table className="table">
           <thead>
             <tr>
               <th>#</th>
               <th>Code</th>
-              <th>Active</th>
               <th>Discount</th>
+              <th>Active</th>
               <th></th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            {promotions.map((d) => (
-              <tr key={d.department_id}>
-                <td>{d.department_id}</td>
-                <td>{d.name}</td>
+            {promotions.map((p) => (
+              <tr key={p.promotion_id}>
+                <td>{p.promotion_id}</td>
+                <td>{p.code}</td>
+                <td>{p.discount}</td>
+                <td>{p.active ? "yes" : "no"}</td>
                 <td>
-                  <button className="btn btn-secondary">Edit</button>
+                  <Link
+                    to={`/promotions/${p.promotion_id}`}
+                    className="btn btn-secondary"
+                  >
+                    Edit
+                  </Link>
                 </td>
                 <td>
-                  <button className="btn btn-danger">Delete</button>
+                  <button
+                    onClick={() => this.handleDelete(p.promotion_id)}
+                    className="btn btn-danger"
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
@@ -57,6 +72,19 @@ class Promotions extends Component {
       </React.Fragment>
     );
   }
+  handleDelete = async (id) => {
+    const originalPromotions = [...this.state.promotions];
+    try {
+      this.setState({
+        promotions: originalPromotions.filter((p) => p.promotion_id !== id),
+      });
+      await deletePromotion(id);
+      toast.success("Successfuly deleted promotion");
+    } catch (error) {
+      toast.error("error while deleting promotion");
+      this.setState({ deparments: originalPromotions });
+    }
+  };
 }
 
 export default Promotions;

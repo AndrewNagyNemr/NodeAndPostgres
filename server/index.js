@@ -100,10 +100,10 @@ app.get(`${productEndPoint}/:id`, async (req, res) => {
 
 app.post(productEndPoint, async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, price, dep_id } = req.body;
     const newProduct = await pool.query(
-      "INSERT INTO product (name) VALUES($1) RETURNING *",
-      [name]
+      "INSERT INTO product (name, price, dep_id) VALUES($1, $2, $3) RETURNING *",
+      [name, price, dep_id]
     );
     res.send(newProduct.rows[0]);
   } catch (error) {
@@ -164,10 +164,10 @@ app.get(`${promotionEndPoint}/:id`, async (req, res) => {
 
 app.post(promotionEndPoint, async (req, res) => {
   try {
-    const { name } = req.body;
+    const { code, active, discount } = req.body;
     const newPromotion = await pool.query(
-      "INSERT INTO promotion (name) VALUES($1) RETURNING *",
-      [name]
+      "INSERT INTO promotion(code, active, discount) VALUES($1 , $2, $3) RETURNING *",
+      [code, active, discount]
     );
     res.send(newPromotion.rows[0]);
   } catch (error) {

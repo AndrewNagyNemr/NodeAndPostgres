@@ -71,12 +71,12 @@ class Departments extends Component {
     const originalDepartments = [...this.state.departments];
     try {
       this.setState({
-        departments: originalDepartments.filter((d) => d.department_id != id),
+        departments: originalDepartments.filter((d) => d.department_id !== id),
       });
       await deleteDepartment(id);
-      toast.success("Successfuly deleted category");
+      toast.success("Successfuly deleted department");
     } catch (error) {
-      toast.error("error while deleting category");
+      toast.error("error while deleting department");
       this.setState({ deparments: originalDepartments });
     }
   };
