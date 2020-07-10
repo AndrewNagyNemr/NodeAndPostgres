@@ -5,6 +5,7 @@ import { getDepartments } from "./../services/departmentService";
 import { filterProducts } from "./../services/filter";
 import Pagination from "./../common/pagination";
 import { paginate } from "./../utils/paginate";
+import SearchBox from "./searchBox";
 
 class Home extends Component {
   state = {
@@ -14,6 +15,7 @@ class Home extends Component {
     selectedDepartment: "All",
     pageSize: 3,
     currentPage: 1,
+    searchQuery: "",
   };
 
   async componentDidMount() {
@@ -30,13 +32,19 @@ class Home extends Component {
       selectedDepartment,
       pageSize,
       currentPage,
+      searchQuery,
     } = this.state;
 
-    const filteredProducts = filterProducts(
+    let filteredProducts = filterProducts(
       products,
       departments,
       selectedDepartment
     );
+
+    if (searchQuery)
+      filteredProducts = filteredProducts.filter((p) =>
+        p.name.toLowerCase().startsWith(searchQuery.toLowerCase())
+      );
 
     const paginatedFilteredProducts = paginate(
       filteredProducts,
@@ -50,6 +58,7 @@ class Home extends Component {
     return (
       <div className="row">
         <div className="col-9">
+          <SearchBox value={searchQuery} onChange={this.handleSearch} />
           <table className="table">
             <thead>
               <tr>
@@ -101,7 +110,11 @@ class Home extends Component {
   }
 
   handleDepartment = (department) => {
-    this.setState({ selectedDepartment: department, currentPage: 1 });
+    this.setState({
+      selectedDepartment: department,
+      currentPage: 1,
+      searchQuery: "",
+    });
   };
 
   handleActiveDepartment = (department) => {
@@ -112,6 +125,10 @@ class Home extends Component {
 
   handlePageChange = (currentPage) => {
     this.setState({ currentPage });
+  };
+
+  handleSearch = (searchQuery) => {
+    this.setState({ searchQuery, currentPage: 1, selectedDepartment: "All" });
   };
 }
 
