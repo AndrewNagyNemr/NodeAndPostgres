@@ -202,5 +202,57 @@ app.delete(`${promotionEndPoint}/:id`, async (req, res) => {
   }
 });
 
+//Products_Promotions Routes
+const ppEndPoint = "/api/products-promotions";
+
+app.get(ppEndPoint, async (req, res) => {
+  try {
+    const pp = await pool.query("SELECT * FROM product_promotion");
+    res.send(pp.rows);
+  } catch (error) {
+    res.send(error.message);
+  }
+});
+
+
+app.get(`${ppEndPoint}/:product_id`, async (req, res) => {
+  try {
+    const { product_id } = req.params;
+    const pp = await pool.query(
+      "SELECT promotion_id FROM product_promotion WHERE product_id =($1)",
+      [product_id]
+    );
+    res.send(pp.rows);
+  } catch (error) {
+    res.send(error.message);
+  }
+});
+
+app.post(ppEndPoint, async (req, res) => {
+  try {
+    const { product_id, promotion_id } = req.body;
+    const pp = await pool.query(
+      "INSERT INTO product_promotion(product_id, promotion_id) VALUES($1 , $2) RETURNING *",
+      [product_id, promotion_id]
+    );
+    res.send(pp.rows[0]);
+  } catch (error) {
+    res.send(error.message);
+  }
+});
+
+app.delete(`${ppEndPoint}/:product_id/:promotion_id`, async (req, res) => {
+  try {
+    const { product_id, promotion_id } = req.params;
+    const deletePP = await pool.query(
+      "DELETE FROM product_promotion WHERE product_id= $1 and promotion_id=$2 RETURNING *",
+      [product_id, promotion_id]
+    );
+    res.send(deletePP.rows[0]);
+  } catch (error) {
+    res.send(error.message);
+  }
+});
+
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`server started on port ${port}`));

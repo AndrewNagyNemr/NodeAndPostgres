@@ -12,6 +12,7 @@ import AddPromotion from "./components/promotion/addPromotion";
 import NotFound from "./components/not-found";
 import "./App.css";
 import "react-toastify/dist/ReactToastify.css";
+import ProductPromotion from './components/product/productPromotion';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/departments/:id" exact component={AddDepartment} />
           <Route path="/products" exact component={Products} />
           <Route path="/products/:id" exact component={AddProduct} />
+          <Route path="/product-promotions/:name/:id" exact component={ProductPromotion} />
           <Route path="/promotions" exact component={Promotions} />
           <Route path="/promotions/:id" exact component={AddPromotion} />
           <Route path="/not-found" exact component={NotFound} />

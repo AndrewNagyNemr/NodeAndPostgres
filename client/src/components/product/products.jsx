@@ -43,6 +43,7 @@ class Products extends Component {
               <th>Department</th>
               <th></th>
               <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -53,6 +54,14 @@ class Products extends Component {
                 <td>{p.price}</td>
                 <td>
                   {departments.find((d) => d.department_id === p.dep_id).name}
+                </td>
+                <td>
+                  <Link
+                    to={`/product-promotions/${p.name}/${p.product_id}`}
+                    className="btn btn-warning"
+                  >
+                    Promo
+                  </Link>
                 </td>
                 <td>
                   <Link

@@ -16,7 +16,6 @@ class AddProduct extends Form {
     data: { name: "", price: "", dep_id: "" },
     errors: {},
     departments: [],
-    oldProduct: {},
     loading: true,
   };
 
@@ -27,26 +26,25 @@ class AddProduct extends Form {
     if (id === "new") return;
     const { data } = await getProduct(id);
     if (!data) return this.props.history.replace("new");
-    this.setState({ data, oldPromotion: data });
+    this.setState({ data });
   }
 
   schema = {
-    oldProduct: Joi,
     name: Joi.string().required().label("Name"),
     price: Joi.number().required().label("Price"),
     dep_id: Joi,
-    id: Joi.string(),
+    product_id: Joi,
   };
 
   doSubmit = async () => {
     const id = this.props.match.params.id;
-    const { oldProducts, data } = this.state;
+    const { data } = this.state;
     if (id !== "new") {
       try {
         await updateProduct(id, data);
         return toast.success("product updated successfully");
       } catch (error) {
-        this.setState({ data, oldProducts });
+        this.setState({ data });
         return toast.error("Error while updating product");
       }
     } else {
