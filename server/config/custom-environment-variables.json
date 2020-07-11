@@ -2,6 +2,7 @@
   "dbConf": {
     "user": "trufla_user",
     "password": "trufla_password",
-    "port": "trufla_port"
+    "port": "trufla_port",
+    "host": "trufla_host"
   }
 }

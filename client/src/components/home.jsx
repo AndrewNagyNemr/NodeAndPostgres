@@ -26,7 +26,6 @@ class Home extends Component {
     const { data: products } = await getProducts();
     const { data: departments } = await getDepartments();
     const { data: productsPromos } = await getProductsPromos();
-    console.log(productsPromos);
     this.setState({ loading: false, products, departments, productsPromos });
   }
 

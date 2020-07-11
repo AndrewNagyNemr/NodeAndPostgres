@@ -2,7 +2,7 @@
     -- => set trufla_user="Enter your db username here"
     -- => set trufla_password="Enter your db password here"
     -- => set trufla_port="Enter your db port here"
-    -- => set trufla_password="Enter your password here"
+    -- => set trufla_host="Enter your host here"
 -- if you are using mac or linux machine =>replace "set" with "export"
 
 CREATE DATABASE truflaDB;
