@@ -25,3 +25,11 @@ CREATE TABLE product_promotion(
     promotion_id integer NOT NULL REFERENCES promotion(promotion_id),
     PRIMARY KEY(product_id, promotion_id)
 );
+
+select product.product_id, product.name, promotion.code, promotion.discount, promotion.active
+    from promotion
+    join product_promotion pp
+    on promotion.promotion_id = pp.promotion_id
+    join product
+    on product.product_id = pp.product_id
+    where product.id = $1;

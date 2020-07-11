@@ -6,33 +6,41 @@ import { filterProducts } from "./../services/filter";
 import Pagination from "./../common/pagination";
 import { paginate } from "./../utils/paginate";
 import SearchBox from "./searchBox";
+import DropDown from "./dropDown";
+import { getProductsPromos } from "./../services/productsPromotionsService";
 
 class Home extends Component {
   state = {
     products: [],
     departments: [],
+    productsPromos: [],
     loading: true,
     selectedDepartment: "All",
     pageSize: 3,
     currentPage: 1,
     searchQuery: "",
+    promoFilter: "",
   };
 
   async componentDidMount() {
     const { data: products } = await getProducts();
     const { data: departments } = await getDepartments();
-    this.setState({ loading: false, products, departments });
+    const { data: productsPromos } = await getProductsPromos();
+    console.log(productsPromos);
+    this.setState({ loading: false, products, departments, productsPromos });
   }
 
   render() {
     const {
       products,
+      productsPromos,
       departments,
       loading,
       selectedDepartment,
       pageSize,
       currentPage,
       searchQuery,
+      promoFilter,
     } = this.state;
 
     let filteredProducts = filterProducts(
@@ -44,6 +52,10 @@ class Home extends Component {
     if (searchQuery)
       filteredProducts = filteredProducts.filter((p) =>
         p.name.toLowerCase().startsWith(searchQuery.toLowerCase())
+      );
+    else if (promoFilter)
+      filteredProducts = productsPromos.filter((p) =>
+        p.code === promoFilter
       );
 
     const paginatedFilteredProducts = paginate(
@@ -58,13 +70,18 @@ class Home extends Component {
     return (
       <div className="row">
         <div className="col-9">
-          <SearchBox value={searchQuery} onChange={this.handleSearch} />
+          <SearchBox
+            value={searchQuery}
+            onChange={this.handleSearch}
+            placeholder="Search.."
+          />
           <table className="table">
             <thead>
               <tr>
                 <th>Name</th>
                 <th>Price</th>
                 <th>Department</th>
+                <th>Promotions</th>
               </tr>
             </thead>
             <tbody>
@@ -74,6 +91,14 @@ class Home extends Component {
                   <td>{p.price}</td>
                   <td>
                     {departments.find((d) => d.department_id === p.dep_id).name}
+                  </td>
+                  <td>
+                    <DropDown
+                      productsPromos={productsPromos.filter(
+                        (pp) => pp.product_id === p.product_id && pp.active
+                      )}
+                      price={p.price}
+                    />
                   </td>
                 </tr>
               ))}
@@ -104,6 +129,13 @@ class Home extends Component {
               </button>
             ))}
           </div>
+          <div className="my-3">
+            <SearchBox
+              value={promoFilter}
+              onChange={this.handlePromoFitler}
+              placeholder="Enter promocode"
+            />
+          </div>
         </div>
       </div>
     );
@@ -128,7 +160,21 @@ class Home extends Component {
   };
 
   handleSearch = (searchQuery) => {
-    this.setState({ searchQuery, currentPage: 1, selectedDepartment: "All" });
+    this.setState({
+      searchQuery,
+      currentPage: 1,
+      selectedDepartment: "All",
+      promoFilter: "",
+    });
+  };
+
+  handlePromoFitler = (promoFilter) => {
+    this.setState({
+      promoFilter,
+      currentPage: 1,
+      selectedDepartment: "All",
+      searchQuery: "",
+    });
   };
 }
 

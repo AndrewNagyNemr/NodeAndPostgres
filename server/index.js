@@ -207,13 +207,18 @@ const ppEndPoint = "/api/products-promotions";
 
 app.get(ppEndPoint, async (req, res) => {
   try {
-    const pp = await pool.query("SELECT * FROM product_promotion");
+    const pp = await pool.query(`
+      select product.product_id, product.name, product.dep_id, product.price, promotion.code, promotion.discount, promotion.active
+      from promotion
+      join product_promotion pp
+      on promotion.promotion_id = pp.promotion_id
+      join product
+      on product.product_id = pp.product_id`);
     res.send(pp.rows);
   } catch (error) {
     res.send(error.message);
   }
 });
-
 
 app.get(`${ppEndPoint}/:product_id`, async (req, res) => {
   try {
