@@ -1,0 +1,6 @@
+{
+  "dbConf": {
+    "host": "localhost",
+    "database": "truflaDB"
+  }
+}

@@ -1,11 +1,5 @@
+const config = require("config");
 const { Pool } = require("pg");
 
-const pool = new Pool({
-  user: "postgres",
-  password: "123",
-  host: "localhost",
-  port: 5432,
-  database: "truflaDB",
-});
-
+const pool = new Pool(config.get("dbConf"));
 module.exports = pool;

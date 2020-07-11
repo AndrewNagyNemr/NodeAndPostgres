@@ -1,16 +1,30 @@
 const express = require("express");
+const helmet = require("helmet");
+// const morgan = require("morgan");
 const app = express();
 
 const cors = require("cors");
+
+const Joi = require("joi");
 
 const pool = require("./db");
 
 //middlewares
 app.use(cors());
+app.use(helmet());
+// app.use(morgan("tiny"));
 app.use(express.json());
+app.use(express.static("public"));
 
 //Departments Routes
 const departmentEndPoint = "/api/departments";
+
+const vlidateDepartment = (department) => {
+  const schema = {
+    name: Joi.string().min(3).max(50).required(),
+  };
+  return Joi.validate(department, schema);
+};
 
 app.get(departmentEndPoint, async (req, res) => {
   try {
@@ -28,6 +42,8 @@ app.get(`${departmentEndPoint}/:id`, async (req, res) => {
       "SELECT * FROM department WHERE department_id =($1)",
       [id]
     );
+    if (!department.rows[0])
+      return res.status(404).send("no department with the given id");
     res.send(department.rows[0]);
   } catch (error) {
     res.send(error.message);
@@ -35,6 +51,9 @@ app.get(`${departmentEndPoint}/:id`, async (req, res) => {
 });
 
 app.post(departmentEndPoint, async (req, res) => {
+  // const {error} = vlidateDepartment(req.body)
+  // if (error) return res.status(400).send(error.details[0].message);
+
   try {
     const { name } = req.body;
     const newDepartment = await pool.query(
@@ -48,6 +67,18 @@ app.post(departmentEndPoint, async (req, res) => {
 });
 
 app.put(`${departmentEndPoint}/:id`, async (req, res) => {
+  // look up the department if exist continue else send 404
+  // const department = await pool.query(
+  //     "SELECT * FROM department WHERE department_id =($1)",
+  //     [id]
+  //   );
+  // if (!department.rows[0])
+  // return res.status(404).send("no department with the given id");
+
+  //validte the dep name
+  // const {error} = vlidateDepartment(req.body)
+  // if (error) return res.status(400).send(error.details[0].message);
+
   try {
     const { id } = req.params;
     const { name } = req.body;
@@ -60,7 +91,15 @@ app.put(`${departmentEndPoint}/:id`, async (req, res) => {
     res.send(error.message);
   }
 });
+
 app.delete(`${departmentEndPoint}/:id`, async (req, res) => {
+  // look up the department if exist continue else send 404
+  // const department = await pool.query(
+  //     "SELECT * FROM department WHERE department_id =($1)",
+  //     [id]
+  //   );
+  // if (!department.rows[0])
+  // return res.status(404).send("no department with the given id");
   try {
     const { id } = req.params;
     const deleteDepartment = await pool.query(
@@ -92,6 +131,8 @@ app.get(`${productEndPoint}/:id`, async (req, res) => {
       "SELECT * FROM product WHERE product_id =($1)",
       [id]
     );
+    if (!product.rows[0])
+      return res.status(404).send("no product with the given id");
     res.send(product.rows[0]);
   } catch (error) {
     res.send(error.message);
@@ -156,6 +197,8 @@ app.get(`${promotionEndPoint}/:id`, async (req, res) => {
       "SELECT * FROM promotion WHERE promotion_id =($1)",
       [id]
     );
+    if (!promotion.rows[0])
+      return res.status(404).send("no promotion with the given id");
     res.send(promotion.rows[0]);
   } catch (error) {
     res.send(error.message);
@@ -227,6 +270,8 @@ app.get(`${ppEndPoint}/:product_id`, async (req, res) => {
       "SELECT promotion_id FROM product_promotion WHERE product_id =($1)",
       [product_id]
     );
+    if (!pp.rows[0])
+      return res.status(404).send("no product with the given id");
     res.send(pp.rows);
   } catch (error) {
     res.send(error.message);
