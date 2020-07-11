@@ -2,8 +2,16 @@
 PostgreSQL Version V12.  
 Latest version of node and npm
 
-## Installation of Server
-create a database.
+## 1- create a database.
+```bash
+psql -U "enter your db username"
+```
+then enter your password
+```bash
+create database "enter your db name";
+```
+
+## 2- Installation of Server
 ```bash
 cd .\server\
 npm i 
@@ -19,7 +27,7 @@ set db_port="Enter your db port here"
 set db_host="Enter your host here"
 if you are using mac or linux machine =>replace "set" with "export" 
 ```
-Set database tables with dummy data:
+Set database tables and dummy data:
 ```bash
 node start.js
 ```
@@ -27,7 +35,7 @@ Start server app
 ```bash
 node index.js
 ```
-## Installation of client
+## 3- Installation of client
 ```bash
 cd .\client\
 npm i 
@@ -36,3 +44,4 @@ Start client app
 ```bash
 npm start
 ```
+happy hacking :)
