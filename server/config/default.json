@@ -1,5 +1,3 @@
 {
-  "dbConf": {
-    "database": "truflaDB"
-  }
+  "dbConf": {}
 }

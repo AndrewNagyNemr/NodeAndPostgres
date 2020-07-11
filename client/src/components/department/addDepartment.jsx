@@ -4,37 +4,36 @@ import Joi from "joi-browser";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import { addDepartment, getDepartment, updateDepartment } from "../../services/departmentService";
+import Loading from "./../loading/loading";
 
 class AddDepartment extends Form {
   state = {
     data: { name: "" },
     errors: {},
-    oldDepartment: {},
+    loading: true,
   };
 
   async componentDidMount() {
-    const id = this.props.match.params.id;
+    const { id } = this.props.match.params;
     if (id === "new") return;
     const { data } = await getDepartment(id);
     if (!data) return this.props.history.replace("new");
-    this.setState({ data: { name: data.name }, oldDepartment: data });
+    this.setState({ data: { name: data.name }, loading: false });
   }
 
   schema = {
-    oldDepartment: Joi,
     name: Joi.string().required().label("Name"),
-    id: Joi.string(),
   };
 
   doSubmit = async () => {
-    const id = this.props.match.params.id;
-    const { oldDepartment, data } = this.state;
+    const { id } = this.props.match.params;
+    const { data } = this.state;
     if (id !== "new") {
       try {
         await updateDepartment(id, data);
         return toast.success("department name updated successfully");
       } catch (error) {
-        this.setState({ data: { name: oldDepartment.name }, oldDepartment });
+        // this.setState({ data: { name: oldDepartment.name } });
         return toast.error("Error while updating department");
       }
     } else {
@@ -53,6 +52,8 @@ class AddDepartment extends Form {
 
   render() {
     const { id } = this.props.match.params;
+    const { loading } = this.state;
+    if (loading) return <Loading />;
     return (
       <React.Fragment>
         <h3 className="main_head my-3">Add Department</h3>

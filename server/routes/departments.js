@@ -69,26 +69,30 @@ router.put("/:id", async (req, res) => {
 });
 
 router.delete("/:id", async (req, res) => {
-  // look up the department if exist continue else send 404
-  // const department = await pool.query(
-  //     "SELECT * FROM department WHERE department_id =($1)",
-  //     [id]
-  //   );
-  // if (!department.rows[0])
-  // return res.status(404).send("no department with the given id");
+  const { id } = req.params;
+  const department = await getDepartment(id);
+  if (!department)
+    return res.status(404).send("no department with the given id");
   try {
-    const { id } = req.params;
     const deleteDepartment = await pool.query(
       "DELETE FROM department WHERE department_id = $1 RETURNING *",
       [id]
     );
     res.send(deleteDepartment.rows[0]);
   } catch (error) {
-    res.send(error.message);
+    res.status(400).send(error.message);
   }
 });
 
 module.exports = router;
+
+const getDepartment = async (id) => {
+  const department = await pool.query(
+    "SELECT * FROM department WHERE department_id =($1)",
+    [id]
+  );
+  return department.rows[0];
+};
 
 const vlidateDepartment = (department) => {
   const schema = {
