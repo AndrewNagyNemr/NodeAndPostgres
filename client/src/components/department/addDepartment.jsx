@@ -8,22 +8,26 @@ import {
   getDepartment,
   updateDepartment,
 } from "../../services/departmentService";
+import Loading from "./../loading/loading";
 
 class AddDepartment extends Form {
   state = {
     data: { name: "" },
     errors: {},
+    loading: true,
   };
 
   async componentDidMount() {
     const { id } = this.props.match.params;
-    if (id === "new") return;
-    try {
-      const { data } = await getDepartment(id);
-      this.setState({ data: { name: data.name } });
-    } catch (error) {
-      return this.props.history.replace("new");
+    if (id !== "new") {
+      try {
+        const { data } = await getDepartment(id);
+        this.setState({ data: { name: data.name } });
+      } catch (error) {
+        this.props.history.replace("new");
+      }
     }
+    this.setState({ loading: false });
   }
 
   schema = {
@@ -43,19 +47,19 @@ class AddDepartment extends Form {
     } else {
       try {
         await addDepartment(this.state.data);
-        this.setState({ data: { name: "" } });
         toast.success("successfully added department");
       } catch (ex) {
         if (ex.response && ex.response.status === 400) {
           toast.error(ex.response.data);
-          this.setState({ data: { name: "" } });
         }
       }
+      this.setState({ data: { name: "" } });
     }
   };
 
   render() {
     const { id } = this.props.match.params;
+    if (this.state.loading) return <Loading />;
     return (
       <React.Fragment>
         <h3 className="main_head my-3">Add Department</h3>

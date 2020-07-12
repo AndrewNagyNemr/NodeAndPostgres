@@ -47,7 +47,7 @@ class Promotions extends Component {
               <tr key={p.promotion_id}>
                 <td>{p.promotion_id}</td>
                 <td>{p.code}</td>
-                <td>{p.discount}</td>
+                <td>{p.discount} %</td>
                 <td>{p.active ? "yes" : "no"}</td>
                 <td>
                   <Link

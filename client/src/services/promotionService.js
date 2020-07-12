@@ -14,8 +14,9 @@ export function addPromotion(promotion) {
   return http.post(`${apiEndPoint}/promotions`, promotion);
 }
 
-export function updatePromotion(id, data) {
-  return http.put(`${apiEndPoint}/promotions/${id}`, data);
+export function updatePromotion(id,promotion) {
+  promotion.discount = parseInt(promotion.discount);
+  return http.put(`${apiEndPoint}/promotions/${id}`, promotion);
 }
 
 export function deletePromotion(id) {

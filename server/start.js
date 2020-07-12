@@ -55,7 +55,7 @@ Insert Into product(name, dep_id, price) VALUES('Dell inspiron', (select departm
 Insert Into product(name, dep_id, price) VALUES('HP xps', (select department_id from department where name = 'Laptops'), 1000);
 Insert Into product(name, dep_id, price) VALUES('Thinkpad', (select department_id from department where name = 'Laptops'), 6000);
 Insert Into product(name, dep_id, price) VALUES('Samsung', (select department_id from department where name = 'Screens'), 10000);
-Insert Into product(name, dep_id, price) VALUES('LG', (select department_id from department where name = 'Screens'), 8000);
+Insert Into product(name, dep_id, price) VALUES('LG TV', (select department_id from department where name = 'Screens'), 8000);
 Insert Into product(name, dep_id, price) VALUES('Tochiba', (select department_id from department where name = 'Screens'), 6000);
 Insert Into product(name, dep_id, price) VALUES('El-Araby', (select department_id from department where name = 'Screens'), 6000);
 Insert Into product(name, dep_id, price) VALUES('Iphone X', (select department_id from department where name = 'Mobile Phones'), 15000);
@@ -76,8 +76,8 @@ Insert Into product_promotion(product_id, promotion_id) VALUES((select product_i
 Insert Into product_promotion(product_id, promotion_id) VALUES((select product_id from product where name = 'Airpod'), (select promotion_id from promotion where code = 'less20'));
 Insert Into product_promotion(product_id, promotion_id) VALUES((select product_id from product where name = 'Samsung Charger'), (select promotion_id from promotion where code = 'less10'));
 Insert Into product_promotion(product_id, promotion_id) VALUES((select product_id from product where name = 'Samsung Charger'), (select promotion_id from promotion where code = 'less20'));
-Insert Into product_promotion(product_id, promotion_id) VALUES((select product_id from product where name = 'LG'), (select promotion_id from promotion where code = 'less20'));
-Insert Into product_promotion(product_id, promotion_id) VALUES((select product_id from product where name = 'LG'), (select promotion_id from promotion where code = 'less15'));
+Insert Into product_promotion(product_id, promotion_id) VALUES((select product_id from product where name = 'LG TV'), (select promotion_id from promotion where code = 'less20'));
+Insert Into product_promotion(product_id, promotion_id) VALUES((select product_id from product where name = 'LG TV'), (select promotion_id from promotion where code = 'less15'));
 `);
 } catch (error) {
   console.log(error);

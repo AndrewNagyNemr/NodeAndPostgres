@@ -13,47 +13,54 @@ class AddPromotion extends Form {
   state = {
     data: { code: "", active: false, discount: "" },
     errors: {},
-    oldPromotion: {},
+    loading: true,
   };
 
   async componentDidMount() {
-    const id = this.props.match.params.id;
-    if (id === "new") return;
-    const { data } = await getPromotion(id);
-    if (!data) return this.props.history.replace("new");
-    this.setState({ data, oldPromotion: data });
+    const { id } = this.props.match.params;
+    if (id !== "new") {
+      try {
+        const { data } = await getPromotion(id);
+        this.setState({
+          data: {
+            code: data.code,
+            active: data.active,
+            discount: data.discount,
+          },
+        });
+      } catch (error) {
+        this.props.history.replace("new");
+      }
+    }
+    this.setState({ loading: false });
   }
 
   schema = {
-    oldPromotion: Joi,
-    code: Joi.string().required().label("Code"),
+    code: Joi.string().min(3).max(50).required().label("Code"),
+    discount: Joi.number().min(1).max(99).required().label("Discount"),
     active: Joi.label("Active"),
-    discount: Joi.number().required().label("Discount"),
-    id: Joi.string(),
   };
 
   doSubmit = async () => {
-    const id = this.props.match.params.id;
-    const { oldPromotion, data } = this.state;
+    const { id } = this.props.match.params;
+    const { data } = this.state;
     if (id !== "new") {
       try {
         await updatePromotion(id, data);
         return toast.success("promption updated successfully");
       } catch (error) {
-        this.setState({ data, oldPromotion });
-        return toast.error("Error while updating promotion");
+        return toast.error(error.response.data);
       }
     } else {
       try {
         await addPromotion(this.state.data);
-        this.setState({ data: { code: "", active: false, discount: "" } });
         toast.success("successfully added promotion");
       } catch (ex) {
         if (ex.response && ex.response.status === 400) {
-          const errors = ex.response.data;
-          this.setState({ errors });
+          toast.error(ex.response.data);
         }
       }
+      this.setState({ data: { code: "", active: false, discount: "" } });
     }
   };
 
