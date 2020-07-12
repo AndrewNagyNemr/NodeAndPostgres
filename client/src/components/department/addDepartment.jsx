@@ -3,26 +3,31 @@ import Form from "../../common/form";
 import Joi from "joi-browser";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
-import { addDepartment, getDepartment, updateDepartment } from "../../services/departmentService";
-import Loading from "./../loading/loading";
+import {
+  addDepartment,
+  getDepartment,
+  updateDepartment,
+} from "../../services/departmentService";
 
 class AddDepartment extends Form {
   state = {
     data: { name: "" },
     errors: {},
-    loading: true,
   };
 
   async componentDidMount() {
     const { id } = this.props.match.params;
     if (id === "new") return;
-    const { data } = await getDepartment(id);
-    if (!data) return this.props.history.replace("new");
-    this.setState({ data: { name: data.name }, loading: false });
+    try {
+      const { data } = await getDepartment(id);
+      this.setState({ data: { name: data.name } });
+    } catch (error) {
+      return this.props.history.replace("new");
+    }
   }
 
   schema = {
-    name: Joi.string().required().label("Name"),
+    name: Joi.string().min(3).max(50).required().label("Name"),
   };
 
   doSubmit = async () => {
@@ -31,10 +36,9 @@ class AddDepartment extends Form {
     if (id !== "new") {
       try {
         await updateDepartment(id, data);
-        return toast.success("department name updated successfully");
+        return toast.success("updated successfully");
       } catch (error) {
-        // this.setState({ data: { name: oldDepartment.name } });
-        return toast.error("Error while updating department");
+        return toast.error(error.response.data);
       }
     } else {
       try {
@@ -43,8 +47,8 @@ class AddDepartment extends Form {
         toast.success("successfully added department");
       } catch (ex) {
         if (ex.response && ex.response.status === 400) {
-          const errors = ex.response.data;
-          this.setState({ errors });
+          toast.error(ex.response.data);
+          this.setState({ data: { name: "" } });
         }
       }
     }
@@ -52,8 +56,6 @@ class AddDepartment extends Form {
 
   render() {
     const { id } = this.props.match.params;
-    const { loading } = this.state;
-    if (loading) return <Loading />;
     return (
       <React.Fragment>
         <h3 className="main_head my-3">Add Department</h3>

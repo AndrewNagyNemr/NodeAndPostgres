@@ -76,8 +76,8 @@ class Departments extends Component {
       await deleteDepartment(id);
       toast.success("Successfuly deleted department");
     } catch (error) {
-      toast.error("error while deleting department");
-      this.setState({ deparments: originalDepartments });
+      toast.error(error.response.data);
+      this.setState({ departments: originalDepartments });
     }
   };
 }
