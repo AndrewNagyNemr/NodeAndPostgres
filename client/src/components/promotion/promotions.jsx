@@ -48,7 +48,19 @@ class Promotions extends Component {
                 <td>{p.promotion_id}</td>
                 <td>{p.code}</td>
                 <td>{p.discount} %</td>
-                <td>{p.active ? "yes" : "no"}</td>
+                <td>
+                  {p.active ? (
+                    <i
+                      className="fa fa-check"
+                      style={{ color: "green" }}
+                    ></i>
+                  ) : (
+                    <i
+                      className="fa fa-times-circle"
+                      style={{ color: "red" }}
+                    ></i>
+                  )}
+                </td>
                 <td>
                   <Link
                     to={`/promotions/${p.promotion_id}`}

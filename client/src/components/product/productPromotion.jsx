@@ -20,6 +20,7 @@ class ProductPromotion extends Component {
     const { id: product_id } = this.props.match.params;
     const { data: promotions } = await getPromotions();
     const { data: productPromos } = await getProductPromos(product_id);
+    // console.log(this.state);
     this.setState({ promotions, productPromos, loading: false });
   }
 
@@ -71,7 +72,7 @@ class ProductPromotion extends Component {
         return toast.success("promotion added successfully");
       } catch (error) {
         this.setState({ productPromos: originalPP });
-        return toast.error("error while adding promotion");
+        return toast.error(error.response.data);
       }
     } else {
       try {
@@ -83,7 +84,7 @@ class ProductPromotion extends Component {
         return toast.success("promotion deleted successfully");
       } catch (error) {
         this.setState({ productPromos: originalPP });
-        return toast.error("error while deleting promotion");
+        return toast.error(error.response.data);
       }
     }
   };

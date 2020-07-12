@@ -8,7 +8,7 @@ class DropDown extends Component {
         {productsPromos.length ? (
           <button
             type="button"
-            className="btn btn-warning dropdown-toggle"
+            className="btn btn-warning btn-sm dropdown-toggle"
             data-toggle="dropdown"
             aria-haspopup="true"
             aria-expanded="false"

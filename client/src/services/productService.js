@@ -15,8 +15,10 @@ export function addProduct(product) {
   return http.post(`${apiEndPoint}/products`, product);
 }
 
-export function updateProduct(id, data) {
-  return http.put(`${apiEndPoint}/products/${id}`, data);
+export function updateProduct(id, product) {
+  product.price = parseInt(product.price);
+  product.dep_id = parseInt(product.dep_id);
+  return http.put(`${apiEndPoint}/products/${id}`, product);
 }
 
 export function deleteProduct(id) {

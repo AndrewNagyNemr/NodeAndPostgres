@@ -20,44 +20,48 @@ class AddProduct extends Form {
   };
 
   async componentDidMount() {
-    const id = this.props.match.params.id;
+    const { id } = this.props.match.params;
     const { data: departments } = await getDepartments();
-    this.setState({ departments, loading: false });
-    if (id === "new") return;
-    const { data } = await getProduct(id);
-    if (!data) return this.props.history.replace("new");
-    this.setState({ data });
+    this.setState({ departments });
+    if (id !== "new") {
+      try {
+        const { data } = await getProduct(id);
+        this.setState({
+          data: { name: data.name, price: data.price, dep_id: data.dep_id },
+        });
+      } catch (error) {
+        this.props.history.replace("new");
+      }
+    }
+    this.setState({ loading: false });
   }
 
   schema = {
-    name: Joi.string().required().label("Name"),
-    price: Joi.number().required().label("Price"),
-    dep_id: Joi,
-    product_id: Joi,
+    name: Joi.string().min(3).max(50).required().label("Name"),
+    price: Joi.number().positive().required().label("Price"),
+    dep_id: Joi.number().positive().required(),
   };
 
   doSubmit = async () => {
-    const id = this.props.match.params.id;
+    const { id } = this.props.match.params;
     const { data } = this.state;
     if (id !== "new") {
       try {
         await updateProduct(id, data);
         return toast.success("product updated successfully");
       } catch (error) {
-        this.setState({ data });
-        return toast.error("Error while updating product");
+        return toast.error(error.response.data);
       }
     } else {
       try {
         await addProduct(this.state.data);
-        this.setState({ data: { name: "", price: "", dep_id: "" } });
         toast.success("successfully added product");
       } catch (ex) {
         if (ex.response && ex.response.status === 400) {
-          const errors = ex.response.data;
-          this.setState({ errors });
+          toast.error(ex.response.data);
         }
       }
+      this.setState({ data: { name: "", price: "", dep_id: "" } });
     }
   };
 
